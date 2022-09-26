@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:note_app/provider/crud_notes_provider.dart';
 import 'package:note_app/screen/home.dart';
-import 'package:note_app/screen/note/list_simple_note.dart';
+import 'package:note_app/theme/note_theme.dart';
+import 'package:provider/provider.dart';
 
 import 'system/firebase_options.dart';
 
@@ -15,7 +17,10 @@ void main() async {
 
   ///await Firebase.initializeApp(name: projectId);
 
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    child: const MyApp(),
+    providers: [ChangeNotifierProvider(create: (_) => CrudNotesProvider())],
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,9 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: NoteTheme.dark(),
       home: const Home(),
     );
   }

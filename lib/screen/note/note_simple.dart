@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_app/theme/note_theme.dart';
 
 import '../../model/note.dart';
 
@@ -9,7 +10,7 @@ class NoteSimple extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
+        margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -18,15 +19,14 @@ class NoteSimple extends StatelessWidget {
               children: [
                 Text(
                   note?.title ?? "",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  style: NoteTheme.darkTextTheme.headline2,
                 ),
                 const SizedBox(height: 16),
                 Text(note?.description ?? ""),
                 const SizedBox(height: 16),
                 Container(
-                    color: Colors.transparent,
                     alignment: Alignment.centerRight,
-                    child: Text(note?.noteType?.name ?? "")),
+                    child: Text(note?.noteType?.name ?? "",style: NoteTheme.darkTextTheme.bodySmall,)),
               ]),
         ),
       );

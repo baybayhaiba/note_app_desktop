@@ -12,7 +12,13 @@ class Note {
 
   NoteType? noteType;
 
-  Note(this.id, this.title, this.description, this.color, this.timeAgo, this.noteType);
+  Note(
+      {this.id,
+      this.title,
+      this.description,
+      this.color,
+      this.timeAgo,
+      this.noteType = NoteType.Normal});
 
   @override
   String toString() {
@@ -31,20 +37,22 @@ class Note {
   }
 
   factory Note.fromMap(Map map) {
-
     return Note(
-      map['id'] != null ? map['id'] as int : null,
-      map['title'] != null ? map['title'] as String : null,
-      map['description'] != null ? map['description'] as String : null,
-      map['color'] != null ? map['color'] as int : null,
-      map['timeAgo'] != null ? map['timeAgo'] as int : null,
-      map['noteType'] != null
-          ? NoteType.values.firstWhere((element) => element.name == map['noteType'])
+      id: map['id'] != null ? map['id'] as int : null,
+      title: map['title'] != null ? map['title'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
+      color: map['color'] != null ? map['color'] as int : null,
+      timeAgo: map['timeAgo'] != null ? map['timeAgo'] as int : null,
+      noteType: map['noteType'] != null
+          ? NoteType.values
+              .firstWhere((element) => element.name == map['noteType'])
           : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Note.fromJson(String source) => Note.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Note.fromJson(String source) =>
+      Note.fromMap(json.decode(source) as Map<String, dynamic>);
 }
