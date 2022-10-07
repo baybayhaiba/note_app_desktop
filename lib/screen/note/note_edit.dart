@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:note_app/model/note.dart';
 import 'package:note_app/provider/crud_notes_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class NoteEdit extends StatefulWidget {
   const NoteEdit({
@@ -11,14 +10,20 @@ class NoteEdit extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<NoteEdit> createState() => _NoteEditState();
+  State<NoteEdit> createState() => NoteEditState();
 }
 
-class _NoteEditState extends State<NoteEdit> {
+class NoteEditState extends State<NoteEdit> {
   final _controllerTitle = TextEditingController();
   final _controllerDescription = TextEditingController();
   final _keyForm = GlobalKey<FormState>();
+  Note? nodeLocal;
 
+  void updateNote(Note note) {
+    nodeLocal = note;
+    _controllerTitle.text = note.title ?? "";
+    _controllerDescription.text = note.description ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +33,7 @@ class _NoteEditState extends State<NoteEdit> {
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(right: 16, bottom: 16),
           child: FloatingActionButton(
-              onPressed: onClickFab,
-              child: const Icon(kIsWeb ? Icons.done : Icons.add)),
+              onPressed: onClickFab, child: const Icon(kIsWeb ? Icons.done : Icons.add)),
         ),
         body: Container(
           padding: const EdgeInsets.all(16),
@@ -60,15 +64,23 @@ class _NoteEditState extends State<NoteEdit> {
 
   void onClickFab() {
     if (_keyForm.currentState?.validate() == true) {
-      context.read<CrudNotesProvider>().insertNote(_note);
+      nodeLocal = nodeLocal?.copyWith(
+              title: _controllerTitle.text, description: _controllerDescription.text) ??
+          _note;
+      if (nodeLocal?.id != null) {
+        context.read<CrudNotesProvider>().updateNote(nodeLocal!);
+      } else {
+        context.read<CrudNotesProvider>().insertNote(nodeLocal!);
+      }
+
       clearNote();
     }
   }
 
-  String? validator(String? text) =>
-      text?.isNotEmpty == true ? null : "Làm ơn không bỏ trống";
+  String? validator(String? text) => text?.isNotEmpty == true ? null : "Làm ơn không bỏ trống";
 
   void clearNote() {
+    nodeLocal = null;
     _controllerTitle.clear();
     _controllerDescription.clear();
   }
@@ -76,6 +88,6 @@ class _NoteEditState extends State<NoteEdit> {
   Note get _note => Note(
       title: _controllerTitle.text,
       description: _controllerDescription.text,
-      timeAgo: DateTime.now().millisecondsSinceEpoch,
+      time: DateTime.now().millisecondsSinceEpoch,
       noteType: NoteType.Normal);
 }
